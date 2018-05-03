@@ -1,0 +1,4 @@
+.text-area{
+    -fx-control-inner-background: gray;
+    -fx-text-fill: white;
+}

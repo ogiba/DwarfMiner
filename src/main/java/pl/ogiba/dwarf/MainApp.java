@@ -23,13 +23,16 @@ import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
+    private Stage window;
+
     @Override
     public void start(Stage stage) throws Exception {
 //        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
+        window = stage;
+
         MongoClient mongoClient = new MongoClient("127.0.0.1", 27017);
 
         MongoDatabase db = mongoClient.getDatabase("dwarf_test");
-
 
 //        Button button = new Button();
 //        button.setMinSize(100, 50);
@@ -58,19 +61,20 @@ public class MainApp extends Application {
         AnchorPane.setBottomAnchor(nodesTree, 0.0);
 
         nodesContainer.getChildren().add(nodesTree);
-        
+
         TextArea dataArea = setupTextArea();
-        
+
         AnchorPane dataContainer = new AnchorPane();
-        
+
         AnchorPane.setLeftAnchor(dataArea, 0.0);
         AnchorPane.setRightAnchor(dataArea, 0.0);
         AnchorPane.setTopAnchor(dataArea, 0.0);
         AnchorPane.setBottomAnchor(dataArea, 0.0);
-        
+
         dataContainer.getChildren().add(dataArea);
 
         splitPane.getItems().addAll(nodesContainer, dataContainer);
+        splitPane.setDividerPositions(0.3f, 0.9f);
 
         AnchorPane anchorPane = new AnchorPane();
 
@@ -84,7 +88,7 @@ public class MainApp extends Application {
         Scene scene = new Scene(anchorPane, 640, 480);
         scene.getStylesheets().add("/styles/Styles.css");
         scene.setFill(Color.GHOSTWHITE);
-        
+
         stage.setTitle("SplitPane");
         stage.setScene(scene);
         stage.show();
@@ -105,10 +109,11 @@ public class MainApp extends Application {
 
         return new TreeView<>(treeItemRoot);
     }
-    
+
     private TextArea setupTextArea() {
-          final TextArea textArea = new TextArea();
-          return textArea;
+        final TextArea textArea = new TextArea();
+        textArea.getStylesheets().add("/styles/TextArea.css");
+        return textArea;
     }
 
     /**
