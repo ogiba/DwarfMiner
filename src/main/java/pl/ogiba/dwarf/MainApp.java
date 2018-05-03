@@ -20,6 +20,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import pl.ogiba.dwarf.utils.FileUtils;
 
 public class MainApp extends Application {
 
