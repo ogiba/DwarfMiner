@@ -5,6 +5,7 @@
  */
 package pl.ogiba.dwarf.scenes;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -15,6 +16,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
@@ -27,27 +29,50 @@ public class MainScene implements IMainView {
     private Parent root;
     private TreeView nodesTree;
     private TextArea dataArea;
+    private boolean isConnected = false;
 
     public MainScene() {
         HBox hbox = new HBox(20);
         hbox.setTranslateX(20);
         hbox.setTranslateY(20);
 
-        final Button r1 = new Button("Right Button");
-
         nodesTree = setupTree();
+        nodesTree.setDisable(true);
 
         AnchorPane nodesContainer = setupNodesContainer(nodesTree);
 
         dataArea = setupTextArea();
+        dataArea.setDisable(true);
 
         AnchorPane dataContainer = setupDataContainer(dataArea);
 
         SplitPane splitPane = setupRootPane(nodesContainer, dataContainer);
 
+        AnchorPane container = new AnchorPane(splitPane);
+        BorderPane borderPane = new BorderPane(container);
+
+        final Button connectBtn = new Button("Connect to DB");
+        connectBtn.setOnAction((event) -> {
+            if (isConnected) {
+                isConnected = false;
+                connectBtn.setText("Connect to DB");
+            } else {
+                isConnected = true;
+                connectBtn.setText("Disconnect");
+            }
+            System.err.println("Test");
+        });
+
+        borderPane.setTop(connectBtn);
+
+        AnchorPane.setBottomAnchor(borderPane, 0.0);
+        AnchorPane.setLeftAnchor(borderPane, 0.0);
+        AnchorPane.setRightAnchor(borderPane, 0.0);
+        AnchorPane.setTopAnchor(borderPane, 0.0);
+
         root = new AnchorPane();
 
-        ((AnchorPane) root).getChildren().add(splitPane);
+        ((AnchorPane) root).getChildren().add(borderPane);
     }
 
     @Override

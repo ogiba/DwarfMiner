@@ -30,29 +30,7 @@ public class MainApp extends Application {
         stage.setScene(mainScene.getScene());
         stage.show();
     }
-
-    private TreeView setupTree() {
-        TreeItem<String> treeItemRoot = new TreeItem<>("Root");
-
-        TreeItem<String> nodeItemA = new TreeItem<>("Item A");
-        TreeItem<String> nodeItemB = new TreeItem<>("Item B");
-        TreeItem<String> nodeItemC = new TreeItem<>("Item C");
-        treeItemRoot.getChildren().addAll(nodeItemA, nodeItemB, nodeItemC);
-
-        TreeItem<String> nodeItemA1 = new TreeItem<>("Item A1");
-        TreeItem<String> nodeItemA2 = new TreeItem<>("Item A2");
-        TreeItem<String> nodeItemA3 = new TreeItem<>("Item A3");
-        nodeItemA.getChildren().addAll(nodeItemA1, nodeItemA2, nodeItemA3);
-
-        return new TreeView<>(treeItemRoot);
-    }
-
-    private TextArea setupTextArea() {
-        final TextArea textArea = new TextArea();
-        textArea.getStylesheets().add("/styles/TextArea.css");
-        return textArea;
-    }
-
+    
     /**
      * The main() method is ignored in correctly deployed JavaFX application.
      * main() serves only as fallback in case the application can not be
