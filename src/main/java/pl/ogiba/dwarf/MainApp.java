@@ -4,23 +4,12 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
-import javafx.geometry.Orientation;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import pl.ogiba.dwarf.utils.FileUtils;
+import pl.ogiba.dwarf.scenes.IMainView;
+import pl.ogiba.dwarf.scenes.MainScene;
 
 public class MainApp extends Application {
 
@@ -34,64 +23,11 @@ public class MainApp extends Application {
         MongoClient mongoClient = new MongoClient("127.0.0.1", 27017);
 
         MongoDatabase db = mongoClient.getDatabase("dwarf_test");
-
-//        Button button = new Button();
-//        button.setMinSize(100, 50);
-//
-//        button.setText("Insert");
-//
-//
-        HBox hbox = new HBox(20);
-        hbox.setTranslateX(20);
-        hbox.setTranslateY(20);
-
-        SplitPane splitPane = new SplitPane();
-        splitPane.autosize();
-        splitPane.setOrientation(Orientation.HORIZONTAL);
-
-        final Button r1 = new Button("Right Button");
-
-        TreeView nodesTree = setupTree();
-
-//        ScrollPane scrollPane = new ScrollPane(nodesTree);
-        AnchorPane nodesContainer = new AnchorPane();
-
-        AnchorPane.setLeftAnchor(nodesTree, 0.0);
-        AnchorPane.setRightAnchor(nodesTree, 0.0);
-        AnchorPane.setTopAnchor(nodesTree, 0.0);
-        AnchorPane.setBottomAnchor(nodesTree, 0.0);
-
-        nodesContainer.getChildren().add(nodesTree);
-
-        TextArea dataArea = setupTextArea();
-
-        AnchorPane dataContainer = new AnchorPane();
-
-        AnchorPane.setLeftAnchor(dataArea, 0.0);
-        AnchorPane.setRightAnchor(dataArea, 0.0);
-        AnchorPane.setTopAnchor(dataArea, 0.0);
-        AnchorPane.setBottomAnchor(dataArea, 0.0);
-
-        dataContainer.getChildren().add(dataArea);
-
-        splitPane.getItems().addAll(nodesContainer, dataContainer);
-        splitPane.setDividerPositions(0.3f, 0.9f);
-
-        AnchorPane anchorPane = new AnchorPane();
-
-        AnchorPane.setLeftAnchor(splitPane, 10.0);
-        AnchorPane.setRightAnchor(splitPane, 10.0);
-        AnchorPane.setTopAnchor(splitPane, 10.0);
-        AnchorPane.setBottomAnchor(splitPane, 10.0);
-
-        anchorPane.getChildren().add(splitPane);
-
-        Scene scene = new Scene(anchorPane, 640, 480);
-        scene.getStylesheets().add("/styles/Styles.css");
-        scene.setFill(Color.GHOSTWHITE);
+        
+        IMainView mainScene = new MainScene();
 
         stage.setTitle("SplitPane");
-        stage.setScene(scene);
+        stage.setScene(mainScene.getScene());
         stage.show();
     }
 
