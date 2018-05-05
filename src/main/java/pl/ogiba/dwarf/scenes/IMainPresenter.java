@@ -5,14 +5,10 @@
  */
 package pl.ogiba.dwarf.scenes;
 
-import javafx.scene.Scene;
-
 /**
  *
  * @author ogiba
  */
-public interface IMainView {
-    Scene getScene();
-    
-    void onConnectionResult(boolean isConnected);
+public interface IMainPresenter {
+    void checkConnection();
 }

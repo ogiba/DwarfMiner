@@ -19,10 +19,6 @@ public class MainApp extends Application {
     public void start(Stage stage) throws Exception {
 //        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
         window = stage;
-
-        MongoClient mongoClient = new MongoClient("127.0.0.1", 27017);
-
-        MongoDatabase db = mongoClient.getDatabase("dwarf_test");
         
         IMainView mainScene = new MainScene();
 

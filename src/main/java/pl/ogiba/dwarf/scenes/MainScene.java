@@ -29,9 +29,13 @@ public class MainScene implements IMainView {
     private Parent root;
     private TreeView nodesTree;
     private TextArea dataArea;
-    private boolean isConnected = false;
+    private Button connectBtn;
 
+    private IMainPresenter presenter;
+    
     public MainScene() {
+        this.presenter = new MainPresenter(this);
+        
         HBox hbox = new HBox(20);
         hbox.setTranslateX(20);
         hbox.setTranslateY(20);
@@ -51,15 +55,9 @@ public class MainScene implements IMainView {
         AnchorPane container = new AnchorPane(splitPane);
         BorderPane borderPane = new BorderPane(container);
 
-        final Button connectBtn = new Button("Connect to DB");
+        connectBtn = new Button("Connect to DB");
         connectBtn.setOnAction((event) -> {
-            if (isConnected) {
-                isConnected = false;
-                connectBtn.setText("Connect to DB");
-            } else {
-                isConnected = true;
-                connectBtn.setText("Disconnect");
-            }
+            presenter.checkConnection();
             System.err.println("Test");
         });
 
@@ -83,6 +81,14 @@ public class MainScene implements IMainView {
         return scene;
     }
 
+    @Override
+    public void onConnectionResult(boolean isConnected) {
+        final String btnTitle = isConnected ? "Disconnect" : "Connect to DB";
+        connectBtn.setText(btnTitle);
+        dataArea.setDisable(!isConnected);
+        nodesTree.setDisable(!isConnected);
+    }
+    
     private SplitPane setupRootPane(Node... elems) {
         SplitPane splitPane = new SplitPane();
         splitPane.autosize();
