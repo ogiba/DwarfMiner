@@ -6,7 +6,17 @@
 package pl.ogiba.dwarf.scenes;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.event.ServerClosedEvent;
+import com.mongodb.event.ServerDescriptionChangedEvent;
+import com.mongodb.event.ServerHeartbeatFailedEvent;
+import com.mongodb.event.ServerHeartbeatSucceededEvent;
+import com.mongodb.event.ServerListener;
+import com.mongodb.event.ServerOpeningEvent;
+import pl.ogiba.dwarf.utils.ServerListenerAdapter;
+import pl.ogiba.dwarf.utils.ServerMonitorListenerAdapter;
 
 /**
  *
@@ -28,19 +38,46 @@ public class MainPresenter implements IMainPresenter {
     @Override
     public void checkConnection() {
         if (isConnected) {
-            isConnected = false;
             disconnect();
         } else {
             connectToDb();
-            isConnected = true;
         }
-        
-        mainView.onConnectionResult(isConnected);
     }
 
     private void connectToDb() {
-        client = new MongoClient("127.0.0.1", 27017);
-        db = client.getDatabase("dwarf_test");
+        MongoClientOptions clientOptions = new MongoClientOptions.Builder()
+                .addServerListener(new ServerListenerAdapter() {
+                    @Override
+                    public void serverClosed(ServerClosedEvent event) {
+                        isConnected = false;
+                        mainView.onConnectionResult(isConnected);
+                    }
+                })
+                .addServerMonitorListener(new ServerMonitorListenerAdapter() {
+                    @Override
+                    public void serverHeartbeatFailed(ServerHeartbeatFailedEvent event) {
+                        super.serverHeartbeatFailed(event);
+
+                        isConnected = false;
+                        mainView.onConnectionResult(isConnected);
+                    }
+
+                    @Override
+                    public void serverHeartbeatSucceeded(ServerHeartbeatSucceededEvent event) {
+                        super.serverHeartbeatSucceeded(event);
+
+//                        db = client.getDatabase("dwarf_test");
+                        isConnected = true;
+
+                        mainView.onConnectionResult(isConnected);
+                    }
+
+                })
+                .build();
+
+        ServerAddress serverAddress = new ServerAddress("127.0.0.1", 27017);
+
+        client = new MongoClient(serverAddress, clientOptions);
     }
 
     private void disconnect() {

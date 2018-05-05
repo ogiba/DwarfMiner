@@ -1,12 +1,7 @@
 package pl.ogiba.dwarf;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
 import javafx.stage.Stage;
 import pl.ogiba.dwarf.scenes.IMainView;
 import pl.ogiba.dwarf.scenes.MainScene;

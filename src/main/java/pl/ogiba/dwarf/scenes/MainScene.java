@@ -58,7 +58,6 @@ public class MainScene implements IMainView {
         connectBtn = new Button("Connect to DB");
         connectBtn.setOnAction((event) -> {
             presenter.checkConnection();
-            System.err.println("Test");
         });
 
         borderPane.setTop(connectBtn);
