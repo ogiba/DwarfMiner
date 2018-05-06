@@ -90,7 +90,16 @@ public class MainScene implements IMainView {
             nodesTree.setDisable(!isConnected);
         });
 
-        presenter.loadCollections();
+        presenter.loadData();
+    }
+
+    @Override
+    public void onDataLoaded(String dbName) {
+        Platform.runLater(() -> {
+            TreeItem<String> dataBaseItem = new TreeItem<>(dbName);
+
+            nodesTree.getRoot().getChildren().add(dataBaseItem);
+        });
     }
 
     private SplitPane setupRootPane(Node... elems) {
@@ -110,19 +119,20 @@ public class MainScene implements IMainView {
     }
 
     private TreeView setupTree() {
-        TreeItem<String> treeItemRoot = new TreeItem<>("Root");
+//        TreeItem<String> treeItemRoot = new TreeItem<>("Root");
+//
+//        TreeItem<String> nodeItemA = new TreeItem<>("Item A");
+//        TreeItem<String> nodeItemB = new TreeItem<>("Item B");
+//        TreeItem<String> nodeItemC = new TreeItem<>("Item C");
+//        treeItemRoot.getChildren().addAll(nodeItemA, nodeItemB, nodeItemC);
+//
+//        TreeItem<String> nodeItemA1 = new TreeItem<>("Item A1");
+//        TreeItem<String> nodeItemA2 = new TreeItem<>("Item A2");
+//        TreeItem<String> nodeItemA3 = new TreeItem<>("Item A3");
+//        nodeItemA.getChildren().addAll(nodeItemA1, nodeItemA2, nodeItemA3);
+        TreeItem<String> rootItem = new TreeItem<>("ServerName");
 
-        TreeItem<String> nodeItemA = new TreeItem<>("Item A");
-        TreeItem<String> nodeItemB = new TreeItem<>("Item B");
-        TreeItem<String> nodeItemC = new TreeItem<>("Item C");
-        treeItemRoot.getChildren().addAll(nodeItemA, nodeItemB, nodeItemC);
-
-        TreeItem<String> nodeItemA1 = new TreeItem<>("Item A1");
-        TreeItem<String> nodeItemA2 = new TreeItem<>("Item A2");
-        TreeItem<String> nodeItemA3 = new TreeItem<>("Item A3");
-        nodeItemA.getChildren().addAll(nodeItemA1, nodeItemA2, nodeItemA3);
-
-        return new TreeView<>(treeItemRoot);
+        return new TreeView<>(rootItem);
     }
 
     private AnchorPane setupNodesContainer(TreeView nodesView) {

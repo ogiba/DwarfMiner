@@ -15,4 +15,6 @@ public interface IMainView {
     Scene getScene();
     
     void onConnectionResult(boolean isConnected);
+    
+    void onDataLoaded(String dbName);
 }

@@ -47,6 +47,16 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
+    public void loadData() {
+        if (db == null || !isConnected) {
+            return;
+        }
+        
+        final String dbName = db.getName();
+        mainView.onDataLoaded(dbName);
+    }
+
+    @Override
     public void loadCollections() {
         if (db == null || !isConnected) {
             return;
@@ -83,6 +93,7 @@ public class MainPresenter implements IMainPresenter {
         client = new MongoClient(serverAddress, clientOptions);
 
         db = client.getDatabase("dwarf_test");
+
         isConnected = true;
 
         mainView.onConnectionResult(isConnected);
