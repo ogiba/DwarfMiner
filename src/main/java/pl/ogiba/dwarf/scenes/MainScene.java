@@ -107,7 +107,7 @@ public class MainScene implements IMainView {
     }
 
     @Override
-    public void onCollectionLoaded(ArrayList<String> collections) {
+    public void onCollectionsLoaded(ArrayList<String> collections) {
         Platform.runLater(() -> {
             TreeItem dbTreeItem = (TreeItem) nodesTree.getRoot().getChildren().get(0);
 
@@ -116,6 +116,11 @@ public class MainScene implements IMainView {
                 dbTreeItem.getChildren().add(collectionName);
             });
         });
+    }
+
+    @Override
+    public void onSelectedCollectionLoaded(String data) {
+        dataArea.setText(data);
     }
 
     private SplitPane setupRootPane(Node... elems) {
@@ -158,6 +163,7 @@ public class MainScene implements IMainView {
         TreeItem<String> selectedItem = (TreeItem) nodesTree.getSelectionModel().getSelectedItem();
         if (selectedItem.isLeaf()) {
             System.out.println("Selected item: " + selectedItem.getValue());
+            presenter.loadSelectedCollection(selectedItem.getValue());
         }
     }
 

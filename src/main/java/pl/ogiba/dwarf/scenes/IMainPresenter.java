@@ -15,4 +15,6 @@ public interface IMainPresenter {
     void loadData();
     
     void loadCollections();
+    
+    void loadSelectedCollection(String collection);
 }

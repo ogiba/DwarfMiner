@@ -19,5 +19,7 @@ public interface IMainView {
     
     void onDataLoaded(String dbName);
     
-    void onCollectionLoaded(ArrayList<String> collections);
+    void onCollectionsLoaded(ArrayList<String> collections);
+    
+    void onSelectedCollectionLoaded(String data);
 }

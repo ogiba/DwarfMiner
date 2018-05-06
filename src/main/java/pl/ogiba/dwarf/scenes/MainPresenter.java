@@ -8,6 +8,7 @@ package pl.ogiba.dwarf.scenes;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 import com.mongodb.event.ServerClosedEvent;
@@ -16,7 +17,12 @@ import com.mongodb.event.ServerHeartbeatFailedEvent;
 import com.mongodb.event.ServerHeartbeatSucceededEvent;
 import com.mongodb.event.ServerListener;
 import com.mongodb.event.ServerOpeningEvent;
+import com.mongodb.util.JSON;
 import java.util.ArrayList;
+import org.bson.BsonDocument;
+import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.conversions.Bson;
 import pl.ogiba.dwarf.utils.ServerListenerAdapter;
 import pl.ogiba.dwarf.utils.ServerMonitorListenerAdapter;
 
@@ -51,7 +57,7 @@ public class MainPresenter implements IMainPresenter {
         if (db == null || !isConnected) {
             return;
         }
-        
+
         final String dbName = db.getName();
         mainView.onDataLoaded(dbName);
     }
@@ -65,8 +71,15 @@ public class MainPresenter implements IMainPresenter {
         MongoIterable<String> collections = db.listCollectionNames();
         ArrayList<String> values = collections.into(new ArrayList<>());
         System.err.println(String.format("Number of collections: %s", values.size()));
-        
-        mainView.onCollectionLoaded(values);
+
+        mainView.onCollectionsLoaded(values);
+    }
+
+    @Override
+    public void loadSelectedCollection(String collection) {
+        MongoCollection<Document> selectedCollection = db.getCollection(collection);
+        String data = JSON.serialize(selectedCollection.find());
+        mainView.onSelectedCollectionLoaded(data);
     }
 
     private void connectToDb() {
