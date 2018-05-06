@@ -65,6 +65,8 @@ public class MainPresenter implements IMainPresenter {
         MongoIterable<String> collections = db.listCollectionNames();
         ArrayList<String> values = collections.into(new ArrayList<>());
         System.err.println(String.format("Number of collections: %s", values.size()));
+        
+        mainView.onCollectionLoaded(values);
     }
 
     private void connectToDb() {

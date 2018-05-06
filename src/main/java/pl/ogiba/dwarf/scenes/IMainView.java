@@ -5,6 +5,7 @@
  */
 package pl.ogiba.dwarf.scenes;
 
+import java.util.ArrayList;
 import javafx.scene.Scene;
 
 /**
@@ -17,4 +18,6 @@ public interface IMainView {
     void onConnectionResult(boolean isConnected);
     
     void onDataLoaded(String dbName);
+    
+    void onCollectionLoaded(ArrayList<String> collections);
 }

@@ -5,6 +5,7 @@
  */
 package pl.ogiba.dwarf.scenes;
 
+import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Orientation;
@@ -99,6 +100,20 @@ public class MainScene implements IMainView {
             TreeItem<String> dataBaseItem = new TreeItem<>(dbName);
 
             nodesTree.getRoot().getChildren().add(dataBaseItem);
+            
+            presenter.loadCollections();
+        });
+    }
+
+    @Override
+    public void onCollectionLoaded(ArrayList<String> collections) {
+        Platform.runLater(() -> {
+            TreeItem dbTreeItem = (TreeItem)nodesTree.getRoot().getChildren().get(0);
+            
+            collections.forEach((name) -> {
+                TreeItem<String> collectionName = new TreeItem<>(name);
+                dbTreeItem.getChildren().add(collectionName);
+            });
         });
     }
 
