@@ -17,6 +17,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -100,7 +101,7 @@ public class MainScene implements IMainView {
             TreeItem<String> dataBaseItem = new TreeItem<>(dbName);
 
             nodesTree.getRoot().getChildren().add(dataBaseItem);
-            
+
             presenter.loadCollections();
         });
     }
@@ -108,8 +109,8 @@ public class MainScene implements IMainView {
     @Override
     public void onCollectionLoaded(ArrayList<String> collections) {
         Platform.runLater(() -> {
-            TreeItem dbTreeItem = (TreeItem)nodesTree.getRoot().getChildren().get(0);
-            
+            TreeItem dbTreeItem = (TreeItem) nodesTree.getRoot().getChildren().get(0);
+
             collections.forEach((name) -> {
                 TreeItem<String> collectionName = new TreeItem<>(name);
                 dbTreeItem.getChildren().add(collectionName);
@@ -146,8 +147,18 @@ public class MainScene implements IMainView {
 //        TreeItem<String> nodeItemA3 = new TreeItem<>("Item A3");
 //        nodeItemA.getChildren().addAll(nodeItemA1, nodeItemA2, nodeItemA3);
         TreeItem<String> rootItem = new TreeItem<>("ServerName");
+        final TreeView treeView = new TreeView<>(rootItem);
+        treeView.setDisable(true);
+        treeView.setOnMouseClicked(this::handleTreeMouseClick);
 
-        return new TreeView<>(rootItem);
+        return treeView;
+    }
+
+    private void handleTreeMouseClick(MouseEvent mouseEvent) {
+        TreeItem<String> selectedItem = (TreeItem) nodesTree.getSelectionModel().getSelectedItem();
+        if (selectedItem.isLeaf()) {
+            System.out.println("Selected item: " + selectedItem.getValue());
+        }
     }
 
     private AnchorPane setupNodesContainer(TreeView nodesView) {
@@ -166,7 +177,6 @@ public class MainScene implements IMainView {
     private TextArea setupTextArea() {
         final TextArea textArea = new TextArea();
         textArea.getStylesheets().add("/styles/TextArea.css");
-
         return textArea;
     }
 
