@@ -11,4 +11,6 @@ package pl.ogiba.dwarf.scenes;
  */
 public interface IMainPresenter {
     void checkConnection();
+    
+    void loadCollections();
 }

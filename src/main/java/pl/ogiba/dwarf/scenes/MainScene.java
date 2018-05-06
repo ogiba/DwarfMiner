@@ -5,6 +5,7 @@
  */
 package pl.ogiba.dwarf.scenes;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -32,10 +33,10 @@ public class MainScene implements IMainView {
     private Button connectBtn;
 
     private IMainPresenter presenter;
-    
+
     public MainScene() {
         this.presenter = new MainPresenter(this);
-        
+
         HBox hbox = new HBox(20);
         hbox.setTranslateX(20);
         hbox.setTranslateY(20);
@@ -82,12 +83,16 @@ public class MainScene implements IMainView {
 
     @Override
     public void onConnectionResult(boolean isConnected) {
-        final String btnTitle = isConnected ? "Disconnect" : "Connect to DB";
-        connectBtn.setText(btnTitle);
-        dataArea.setDisable(!isConnected);
-        nodesTree.setDisable(!isConnected);
+        Platform.runLater(() -> {
+            final String btnTitle = isConnected ? "Disconnect" : "Connect to DB";
+            connectBtn.setText(btnTitle);
+            dataArea.setDisable(!isConnected);
+            nodesTree.setDisable(!isConnected);
+        });
+
+        presenter.loadCollections();
     }
-    
+
     private SplitPane setupRootPane(Node... elems) {
         SplitPane splitPane = new SplitPane();
         splitPane.autosize();
