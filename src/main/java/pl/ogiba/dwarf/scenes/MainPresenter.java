@@ -23,6 +23,7 @@ import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.conversions.Bson;
+import org.bson.json.JsonWriter;
 import pl.ogiba.dwarf.utils.ServerListenerAdapter;
 import pl.ogiba.dwarf.utils.ServerMonitorListenerAdapter;
 
@@ -78,6 +79,9 @@ public class MainPresenter implements IMainPresenter {
     @Override
     public void loadSelectedCollection(String collection) {
         MongoCollection<Document> selectedCollection = db.getCollection(collection);
+        
+        System.out.println(selectedCollection.find().first());
+        
         String data = JSON.serialize(selectedCollection.find());
         mainView.onSelectedCollectionLoaded(data);
     }

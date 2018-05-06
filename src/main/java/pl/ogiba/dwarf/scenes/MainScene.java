@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
@@ -22,6 +23,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import pl.ogiba.dwarf.utils.JsonConverter;
 
 /**
  *
@@ -183,6 +185,7 @@ public class MainScene implements IMainView {
     private TextArea setupTextArea() {
         final TextArea textArea = new TextArea();
         textArea.getStylesheets().add("/styles/TextArea.css");
+        textArea.setTextFormatter(new TextFormatter<>(new JsonConverter()));
         return textArea;
     }
 
