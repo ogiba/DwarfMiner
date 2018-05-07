@@ -142,17 +142,6 @@ public class MainScene implements IMainView {
     }
 
     private TreeView setupTree() {
-//        TreeItem<String> treeItemRoot = new TreeItem<>("Root");
-//
-//        TreeItem<String> nodeItemA = new TreeItem<>("Item A");
-//        TreeItem<String> nodeItemB = new TreeItem<>("Item B");
-//        TreeItem<String> nodeItemC = new TreeItem<>("Item C");
-//        treeItemRoot.getChildren().addAll(nodeItemA, nodeItemB, nodeItemC);
-//
-//        TreeItem<String> nodeItemA1 = new TreeItem<>("Item A1");
-//        TreeItem<String> nodeItemA2 = new TreeItem<>("Item A2");
-//        TreeItem<String> nodeItemA3 = new TreeItem<>("Item A3");
-//        nodeItemA.getChildren().addAll(nodeItemA1, nodeItemA2, nodeItemA3);
         TreeItem<String> rootItem = new TreeItem<>("ServerName");
         final TreeView treeView = new TreeView<>(rootItem);
         treeView.setDisable(true);
