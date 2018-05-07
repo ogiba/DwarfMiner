@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pl.ogiba.dwarf.utils;
 
 import com.google.gson.Gson;
@@ -11,6 +6,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.util.StringConverter;
 
 /**
@@ -40,7 +37,8 @@ public class JsonConverter extends StringConverter<String> {
 //
 //        String closeRegex = "[\\]\\}]";
 //        String closeReplacement = "\n$0";
-        String formattedValue = toPrettyFormat(string);//formattedValue.replaceAll(closeRegex, closeReplacement);
+        String formattedValue = toPrettyFormat(string);
+//        String formattedValue = formatJson(string);
         //        for (char singleChar : string.toCharArray()) {
         //            String currentChar = String.valueOf(singleChar);
         //
@@ -62,7 +60,7 @@ public class JsonConverter extends StringConverter<String> {
     public String toPrettyFormat(String jsonString) {
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(jsonString);
-        
+
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         String prettyJson;
@@ -79,4 +77,57 @@ public class JsonConverter extends StringConverter<String> {
         return prettyJson;
     }
 
+    public String formatJson(String jsonString) {
+        Pattern regex = Pattern.compile("[\\[\\{\"*\",\\}\\]]");
+
+//        String openRegex = "[\\[\\{,]";
+//        String openReplacement = "$0\n";
+//
+//        String closeRegex = "[\\]\\}]";
+//        String closeReplacement = "\n$0";
+        int nodeDepth = 0;
+        boolean openQuotation = true;
+        String formattedValue = "";
+        for (char singleChar : jsonString.toCharArray()) {
+            String currentChar = String.valueOf(singleChar);
+
+            final Matcher matcher = regex.matcher(currentChar);
+
+            if (matcher.find()) {
+                switch (currentChar) {
+                    case "]":
+                        formattedValue += "\n" + currentChar;
+                        break;
+                    case "{":
+                    case "[":
+                        for (int i = 0; i < nodeDepth; i++) {
+                            formattedValue += "\t";
+                        }
+                        nodeDepth++;
+                        formattedValue += currentChar + "\n";
+                        break;
+                    case "\"":
+                        if (openQuotation) {
+                            openQuotation = false;
+                            for (int i = 0; i < nodeDepth; i++) {
+                                formattedValue += "\t";
+                            }
+                            formattedValue += currentChar;
+                        }
+                        break;
+                    default:
+                        for (int i = 0; i < nodeDepth; i++) {
+                            formattedValue += "\t";
+                        }
+                        nodeDepth--;
+                        formattedValue += currentChar + "\n";
+                        openQuotation = true;
+                        break;
+                }
+            } else {
+                formattedValue += currentChar;
+            }
+        }
+        return formattedValue;
+    }
 }
