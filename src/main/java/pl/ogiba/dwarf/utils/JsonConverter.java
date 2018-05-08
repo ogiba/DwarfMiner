@@ -37,8 +37,8 @@ public class JsonConverter extends StringConverter<String> {
 //
 //        String closeRegex = "[\\]\\}]";
 //        String closeReplacement = "\n$0";
-        String formattedValue = toPrettyFormat(string);
-//        String formattedValue = formatJson(string);
+//        String formattedValue = toPrettyFormat(string);
+        String formattedValue = formatJson(string);
         //        for (char singleChar : string.toCharArray()) {
         //            String currentChar = String.valueOf(singleChar);
         //
@@ -87,6 +87,7 @@ public class JsonConverter extends StringConverter<String> {
 //        String closeReplacement = "\n$0";
         int nodeDepth = 0;
         boolean openQuotation = true;
+        String previousChar = null;
         String formattedValue = "";
         for (char singleChar : jsonString.toCharArray()) {
             String currentChar = String.valueOf(singleChar);
@@ -100,8 +101,10 @@ public class JsonConverter extends StringConverter<String> {
                         break;
                     case "{":
                     case "[":
-                        for (int i = 0; i < nodeDepth; i++) {
-                            formattedValue += "\t";
+                        if (previousChar == null || !previousChar.equals(":")) {
+                            for (int i = 0; i < nodeDepth; i++) {
+                                formattedValue += "\t";
+                            }
                         }
                         nodeDepth++;
                         formattedValue += currentChar + "\n";
@@ -112,14 +115,25 @@ public class JsonConverter extends StringConverter<String> {
                             for (int i = 0; i < nodeDepth; i++) {
                                 formattedValue += "\t";
                             }
-                            formattedValue += currentChar;
                         }
+                        
+                        formattedValue += currentChar;
+                        break;
+                    case "}":
+                        nodeDepth--;
+                        formattedValue += "\n";
+                        for (int i = 0; i < nodeDepth; i++) {
+                            formattedValue += "\t";
+                        }
+                        formattedValue += currentChar;
+                        break;
+                    case ",":
+                        formattedValue += currentChar + "\n";
                         break;
                     default:
                         for (int i = 0; i < nodeDepth; i++) {
                             formattedValue += "\t";
                         }
-                        nodeDepth--;
                         formattedValue += currentChar + "\n";
                         openQuotation = true;
                         break;
@@ -127,6 +141,8 @@ public class JsonConverter extends StringConverter<String> {
             } else {
                 formattedValue += currentChar;
             }
+
+            previousChar = currentChar;
         }
         return formattedValue;
     }
