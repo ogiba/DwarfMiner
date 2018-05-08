@@ -108,6 +108,7 @@ public class JsonConverter extends StringConverter<String> {
                         }
                         nodeDepth++;
                         formattedValue += currentChar + "\n";
+                        openQuotation = true;
                         break;
                     case "\"":
                         if (openQuotation) {
@@ -129,13 +130,14 @@ public class JsonConverter extends StringConverter<String> {
                         break;
                     case ",":
                         formattedValue += currentChar + "\n";
+                        openQuotation = true;
                         break;
                     default:
                         for (int i = 0; i < nodeDepth; i++) {
                             formattedValue += "\t";
                         }
                         formattedValue += currentChar + "\n";
-                        openQuotation = true;
+//                        openQuotation = true;
                         break;
                 }
             } else {
