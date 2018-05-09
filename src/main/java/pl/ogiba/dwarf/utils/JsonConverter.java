@@ -15,6 +15,7 @@ import javafx.util.StringConverter;
  * @author robertogiba
  */
 public class JsonConverter extends StringConverter<String> {
+
     private static final int DEFUALT_INDENT = 4;
 
     @Override
@@ -75,9 +76,7 @@ public class JsonConverter extends StringConverter<String> {
                         final boolean isColon = findColon(formattedValue);
 
                         if (!isColon) {
-                            for (int i = 0; i < nodeDepth; i++) {
-                                formattedValue += indentValue(indent);
-                            }
+                            formattedValue += indentValue(indent * nodeDepth);
                         }
 
                         nodeDepth++;
@@ -87,9 +86,7 @@ public class JsonConverter extends StringConverter<String> {
                     case "\"":
                         if (openQuotation) {
                             openQuotation = false;
-                            for (int i = 0; i < nodeDepth; i++) {
-                                formattedValue += indentValue(indent);
-                            }
+                            formattedValue += indentValue(indent * nodeDepth);
                         }
 
                         formattedValue += currentChar;
@@ -97,9 +94,7 @@ public class JsonConverter extends StringConverter<String> {
                     case "}":
                         nodeDepth--;
                         formattedValue += "\n";
-                        for (int i = 0; i < nodeDepth; i++) {
-                            formattedValue += indentValue(indent);
-                        }
+                        formattedValue += indentValue(indent * nodeDepth);
                         formattedValue += currentChar;
                         break;
                     case ",":
@@ -107,9 +102,7 @@ public class JsonConverter extends StringConverter<String> {
                         openQuotation = true;
                         break;
                     default:
-                        for (int i = 0; i < nodeDepth; i++) {
-                            formattedValue += indentValue(indent);
-                        }
+                        formattedValue += indentValue(indent * nodeDepth);
                         formattedValue += currentChar + "\n";
                         break;
                 }
