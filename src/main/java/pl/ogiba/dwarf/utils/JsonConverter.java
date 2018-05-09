@@ -27,33 +27,8 @@ public class JsonConverter extends StringConverter<String> {
 
     @Override
     public String fromString(String string) {
-//        Pattern regex = Pattern.compile("[\\[\\{*,\\}\\]]");
-//        String regex = "[\\[\\{*,\\}\\]]";
-
-//        String openRegex = "[\\[\\{,]";
-//        String openReplacement = "$0\n";
-//
-//        String formattedValue = string.replaceAll(openRegex, openReplacement);
-//
-//        String closeRegex = "[\\]\\}]";
-//        String closeReplacement = "\n$0";
-//        String formattedValue = toPrettyFormat(string);
         String formattedValue = formatJson(string);
-        //        for (char singleChar : string.toCharArray()) {
-        //            String currentChar = String.valueOf(singleChar);
-        //
-        //            final Matcher matcher = regex.matcher(currentChar);
-        //
-        //            if (matcher.find()) {
-        //                if (currentChar.equals("}") || currentChar.equals("]")) {
-        //                    formattedValue += "\n" + currentChar;
-        //                } else {
-        //                    formattedValue += currentChar + "\n";
-        //                }
-        //            } else {
-        //                formattedValue += currentChar;
-        //            }
-        //        }
+
         return formattedValue;
     }
 
@@ -80,14 +55,9 @@ public class JsonConverter extends StringConverter<String> {
     public String formatJson(String jsonString) {
         Pattern regex = Pattern.compile("[\\[\\{\"*\",\\}\\]]");
 
-//        String openRegex = "[\\[\\{,]";
-//        String openReplacement = "$0\n";
-//
-//        String closeRegex = "[\\]\\}]";
-//        String closeReplacement = "\n$0";
         int nodeDepth = 0;
         boolean openQuotation = true;
-        String previousChar = null;
+        
         String formattedValue = "";
         for (char singleChar : jsonString.toCharArray()) {
             String currentChar = String.valueOf(singleChar);
@@ -101,17 +71,14 @@ public class JsonConverter extends StringConverter<String> {
                         break;
                     case "{":
                     case "[":
-                        boolean test = false;
-                        if (formattedValue.length() > 1) {
-                            char[] currentCharArray = formattedValue.trim().toCharArray();
-                            test = currentCharArray[currentCharArray.length - 1] == ':';
-                        }
-                        
-                        if (!test) {
+                        final boolean isColon = findColon(formattedValue);
+
+                        if (!isColon) {
                             for (int i = 0; i < nodeDepth; i++) {
                                 formattedValue += "\t";
                             }
                         }
+
                         nodeDepth++;
                         formattedValue += currentChar + "\n";
                         openQuotation = true;
@@ -123,7 +90,7 @@ public class JsonConverter extends StringConverter<String> {
                                 formattedValue += "\t";
                             }
                         }
-                        
+
                         formattedValue += currentChar;
                         break;
                     case "}":
@@ -143,15 +110,23 @@ public class JsonConverter extends StringConverter<String> {
                             formattedValue += "\t";
                         }
                         formattedValue += currentChar + "\n";
-//                        openQuotation = true;
                         break;
                 }
             } else {
                 formattedValue += currentChar;
             }
-
-            previousChar = currentChar;
         }
         return formattedValue;
+    }
+
+    private boolean findColon(String valueToCheck) {
+        if (valueToCheck.length() < 1) {
+            return false;
+        }
+        char[] currentFormattedChars = valueToCheck.trim()
+                .toCharArray();
+        final int lastIndex = currentFormattedChars.length - 1;
+
+        return currentFormattedChars[lastIndex] == ':';
     }
 }
