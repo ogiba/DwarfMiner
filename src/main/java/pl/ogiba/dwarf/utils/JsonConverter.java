@@ -101,7 +101,13 @@ public class JsonConverter extends StringConverter<String> {
                         break;
                     case "{":
                     case "[":
-                        if (previousChar == null || !previousChar.equals(":")) {
+                        boolean test = false;
+                        if (formattedValue.length() > 1) {
+                            char[] currentCharArray = formattedValue.trim().toCharArray();
+                            test = currentCharArray[currentCharArray.length - 1] == ':';
+                        }
+                        
+                        if (!test) {
                             for (int i = 0; i < nodeDepth; i++) {
                                 formattedValue += "\t";
                             }
