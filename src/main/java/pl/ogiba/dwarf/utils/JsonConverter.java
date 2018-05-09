@@ -15,6 +15,7 @@ import javafx.util.StringConverter;
  * @author robertogiba
  */
 public class JsonConverter extends StringConverter<String> {
+    private static final int DEFUALT_INDENT = 4;
 
     @Override
     public String toString(String object) {
@@ -27,7 +28,7 @@ public class JsonConverter extends StringConverter<String> {
 
     @Override
     public String fromString(String string) {
-        String formattedValue = formatJson(string);
+        String formattedValue = formatJson(string, DEFUALT_INDENT);
 
         return formattedValue;
     }
@@ -52,12 +53,12 @@ public class JsonConverter extends StringConverter<String> {
         return prettyJson;
     }
 
-    public String formatJson(String jsonString) {
+    public String formatJson(String jsonString, int indent) {
         Pattern regex = Pattern.compile("[\\[\\{\"*\",\\}\\]]");
 
         int nodeDepth = 0;
         boolean openQuotation = true;
-        
+
         String formattedValue = "";
         for (char singleChar : jsonString.toCharArray()) {
             String currentChar = String.valueOf(singleChar);
@@ -75,7 +76,7 @@ public class JsonConverter extends StringConverter<String> {
 
                         if (!isColon) {
                             for (int i = 0; i < nodeDepth; i++) {
-                                formattedValue += "\t";
+                                formattedValue += indentValue(indent);
                             }
                         }
 
@@ -87,7 +88,7 @@ public class JsonConverter extends StringConverter<String> {
                         if (openQuotation) {
                             openQuotation = false;
                             for (int i = 0; i < nodeDepth; i++) {
-                                formattedValue += "\t";
+                                formattedValue += indentValue(indent);
                             }
                         }
 
@@ -97,7 +98,7 @@ public class JsonConverter extends StringConverter<String> {
                         nodeDepth--;
                         formattedValue += "\n";
                         for (int i = 0; i < nodeDepth; i++) {
-                            formattedValue += "\t";
+                            formattedValue += indentValue(indent);
                         }
                         formattedValue += currentChar;
                         break;
@@ -107,7 +108,7 @@ public class JsonConverter extends StringConverter<String> {
                         break;
                     default:
                         for (int i = 0; i < nodeDepth; i++) {
-                            formattedValue += "\t";
+                            formattedValue += indentValue(indent);
                         }
                         formattedValue += currentChar + "\n";
                         break;
@@ -128,5 +129,13 @@ public class JsonConverter extends StringConverter<String> {
         final int lastIndex = currentFormattedChars.length - 1;
 
         return currentFormattedChars[lastIndex] == ':';
+    }
+
+    private String indentValue(int depth) {
+        String indentedValue = "";
+        for (int j = 0; j < depth; j++) {
+            indentedValue += " ";
+        }
+        return indentedValue;
     }
 }
