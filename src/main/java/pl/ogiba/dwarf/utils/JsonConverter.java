@@ -60,7 +60,7 @@ public class JsonConverter extends StringConverter<String> {
         int nodeDepth = 0;
         boolean openQuotation = true;
 
-        String formattedValue = "";
+        StringBuilder builder = new StringBuilder();
         for (char singleChar : jsonString.toCharArray()) {
             String currentChar = String.valueOf(singleChar);
 
@@ -69,48 +69,50 @@ public class JsonConverter extends StringConverter<String> {
             if (matcher.find()) {
                 switch (currentChar) {
                     case "]":
-                        formattedValue += "\n" + currentChar;
+                        builder.append("\n").append(currentChar);
                         break;
                     case "{":
                     case "[":
-                        final boolean isColon = findColon(formattedValue);
+                        final boolean isColon = findColon(builder.toString());
 
                         if (!isColon) {
-                            formattedValue += indentValue(indent * nodeDepth);
+                            builder.append(indentValue(indent * nodeDepth));
                         }
 
                         nodeDepth++;
-                        formattedValue += currentChar + "\n";
+                        builder.append(currentChar).append("\n");
                         openQuotation = true;
                         break;
                     case "\"":
                         if (openQuotation) {
                             openQuotation = false;
-                            formattedValue += indentValue(indent * nodeDepth);
+                            builder.append(indentValue(indent * nodeDepth));
                         }
 
-                        formattedValue += currentChar;
+                        builder.append(currentChar);
                         break;
                     case "}":
                         nodeDepth--;
-                        formattedValue += "\n";
-                        formattedValue += indentValue(indent * nodeDepth);
-                        formattedValue += currentChar;
+                        builder.append("\n")
+                                .append(indentValue(indent * nodeDepth))
+                                .append(currentChar);
                         break;
                     case ",":
-                        formattedValue += currentChar + "\n";
+                        builder.append(currentChar)
+                                .append("\n");
                         openQuotation = true;
                         break;
                     default:
-                        formattedValue += indentValue(indent * nodeDepth);
-                        formattedValue += currentChar + "\n";
+                        builder.append(indentValue(indent * nodeDepth))
+                                .append(currentChar)
+                                .append("\n");
                         break;
                 }
             } else {
-                formattedValue += currentChar;
+                builder.append(currentChar);
             }
         }
-        return formattedValue;
+        return builder.toString();
     }
 
     private boolean findColon(String valueToCheck) {
