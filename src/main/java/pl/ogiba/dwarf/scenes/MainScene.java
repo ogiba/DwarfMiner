@@ -52,8 +52,17 @@ public class MainScene implements IMainView {
 
         dataArea = setupTextArea();
         dataArea.setDisable(true);
+        
+        HBox dataActionsContainer = new HBox(4);
+        
+        Button applyChangesBtn = new Button("Apply");
+        
+        dataActionsContainer.getChildren().add(applyChangesBtn);
+        
+        BorderPane dataBorderPane = new BorderPane(dataArea);
+        dataBorderPane.setTop(dataActionsContainer);
 
-        AnchorPane dataContainer = setupDataContainer(dataArea);
+        AnchorPane dataContainer = setupDataContainer(dataBorderPane);
 
         SplitPane splitPane = setupRootPane(nodesContainer, dataContainer);
 
@@ -178,7 +187,7 @@ public class MainScene implements IMainView {
         return textArea;
     }
 
-    private AnchorPane setupDataContainer(TextArea dataArea) {
+    private AnchorPane setupDataContainer(Node dataArea) {
         final AnchorPane dataContainer = new AnchorPane();
 
         AnchorPane.setLeftAnchor(dataArea, 0.0);
