@@ -5,24 +5,48 @@
  */
 package pl.ogiba.dwarf.scenes.insert;
 
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 /**
  *
  * @author robertogiba
  */
 public class InsertDocumentScene {
-    
+
     private Parent root;
-    
+
     public InsertDocumentScene() {
-        root = new AnchorPane();
+        Button cancelBtn = new Button("Cancel");
+        Button commitBtn = new Button("Commit");
+
+        final Pane spacer = new Pane();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox btnsContainer = new HBox(4, cancelBtn, spacer, commitBtn);
+
+        TextArea documentArea = new TextArea();
+        
+        BorderPane borderPane = new BorderPane(documentArea);
+        borderPane.setBottom(btnsContainer);
+
+        AnchorPane.setBottomAnchor(borderPane, 0d);
+        AnchorPane.setTopAnchor(borderPane, 0d);
+        AnchorPane.setLeftAnchor(borderPane, 0d);
+        AnchorPane.setRightAnchor(borderPane, 0d);
+
+        root = new AnchorPane(borderPane);
     }
-    
+
     public Scene getScene() {
         Scene scene = new Scene(root, 320, 240);
         scene.getStylesheets().add("/styles/Styles.css");
