@@ -5,6 +5,7 @@
  */
 package pl.ogiba.dwarf.scenes;
 
+import com.mongodb.util.JSON;
 import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -23,6 +24,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import org.bson.Document;
 import pl.ogiba.dwarf.utils.JsonConverter;
 
 /**
@@ -35,6 +37,7 @@ public class MainScene implements IMainView {
     private TreeView nodesTree;
     private TextArea dataArea;
     private Button connectBtn;
+    private Button insertDocumentBtn;
 
     private IMainPresenter presenter;
 
@@ -55,9 +58,9 @@ public class MainScene implements IMainView {
         
         HBox dataActionsContainer = new HBox(4);
         
-        Button applyChangesBtn = new Button("Apply");
+        insertDocumentBtn = setupInsertDocumentBtn();
         
-        dataActionsContainer.getChildren().add(applyChangesBtn);
+        dataActionsContainer.getChildren().add(insertDocumentBtn);
         
         BorderPane dataBorderPane = new BorderPane(dataArea);
         dataBorderPane.setTop(dataActionsContainer);
@@ -198,5 +201,18 @@ public class MainScene implements IMainView {
         dataContainer.getChildren().add(dataArea);
 
         return dataContainer;
+    }
+    
+    private Button setupInsertDocumentBtn() {
+        final Button commitBtn = new Button("Insert document");
+        
+        commitBtn.setOnAction(this::handleCommitAction);
+        
+        return commitBtn;
+    }
+    
+    private void handleCommitAction(ActionEvent event) {
+        System.out.println("Show new window");
+        
     }
 }
