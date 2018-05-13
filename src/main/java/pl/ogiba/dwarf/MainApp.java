@@ -16,7 +16,7 @@ public class MainApp extends Application {
         window = stage;
         
         IMainView mainScene = new MainScene();
-
+        
         stage.setTitle("SplitPane");
         stage.setScene(mainScene.getScene());
         stage.show();
