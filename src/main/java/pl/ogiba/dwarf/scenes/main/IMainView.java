@@ -21,5 +21,7 @@ public interface IMainView {
     
     void onCollectionsLoaded(ArrayList<String> collections);
     
+    void onColectionSelected();
+    
     void onSelectedCollectionLoaded(String data);
 }

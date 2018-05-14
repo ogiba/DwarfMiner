@@ -26,12 +26,13 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import pl.ogiba.dwarf.scenes.insert.InsertDocumentScene;
 import pl.ogiba.dwarf.utils.JsonConverter;
+import pl.ogiba.dwarf.utils.base.BaseScene;
 
 /**
  *
  * @author ogiba
  */
-public class MainScene implements IMainView {
+public class MainScene extends BaseScene implements IMainView {
 
     private Parent root;
     private TreeView nodesTree;
@@ -99,7 +100,7 @@ public class MainScene implements IMainView {
 
     @Override
     public void onConnectionResult(boolean isConnected) {
-        Platform.runLater(() -> {
+        runOnUiThread(() -> {
             final String btnTitle = isConnected ? "Disconnect" : "Connect to DB";
             connectBtn.setText(btnTitle);
             dataArea.setDisable(!isConnected);
@@ -111,7 +112,7 @@ public class MainScene implements IMainView {
 
     @Override
     public void onDataLoaded(String dbName) {
-        Platform.runLater(() -> {
+        runOnUiThread(() -> {
             TreeItem<String> dataBaseItem = new TreeItem<>(dbName);
 
             nodesTree.getRoot().getChildren().add(dataBaseItem);
@@ -122,13 +123,20 @@ public class MainScene implements IMainView {
 
     @Override
     public void onCollectionsLoaded(ArrayList<String> collections) {
-        Platform.runLater(() -> {
+        runOnUiThread(() -> {
             TreeItem dbTreeItem = (TreeItem) nodesTree.getRoot().getChildren().get(0);
 
             collections.forEach((name) -> {
                 TreeItem<String> collectionName = new TreeItem<>(name);
                 dbTreeItem.getChildren().add(collectionName);
             });
+        });
+    }
+
+    @Override
+    public void onColectionSelected() {
+        runOnUiThread(() -> {
+            insertDocumentBtn.setDisable(false);
         });
     }
 
@@ -207,6 +215,7 @@ public class MainScene implements IMainView {
         final Button commitBtn = new Button("Insert document");
 
         commitBtn.setOnAction(this::handleCommitAction);
+        commitBtn.setDisable(true);
 
         return commitBtn;
     }

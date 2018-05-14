@@ -16,12 +16,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
+import pl.ogiba.dwarf.utils.base.BaseScene;
 
 /**
  *
  * @author robertogiba
  */
-public class InsertDocumentScene implements IInsertDocumentView{
+public class InsertDocumentScene extends BaseScene implements IInsertDocumentView{
 
     private Parent root;
 

@@ -78,6 +78,7 @@ public class MainPresenter implements IMainPresenter {
 
     @Override
     public void loadSelectedCollection(String collection) {
+        mainView.onColectionSelected();
         MongoCollection<Document> selectedCollection = db.getCollection(collection);
 
         System.out.println(selectedCollection.find().first());
