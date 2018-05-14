@@ -5,10 +5,12 @@
  */
 package pl.ogiba.dwarf.scenes.insert;
 
+import com.mongodb.client.MongoDatabase;
+
 /**
  *
  * @author robertogiba
  */
 public interface IInsertDocumentPresenter {
-    
+    void transferDatabaseReference(MongoDatabase database);
 }

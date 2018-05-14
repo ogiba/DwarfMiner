@@ -87,6 +87,11 @@ public class MainPresenter implements IMainPresenter {
         mainView.onSelectedCollectionLoaded(data);
     }
 
+    @Override
+    public void proceedInsertAction() {
+        mainView.onInsertApplied(db);
+    }
+
     private void connectToDb() {
         MongoClientOptions clientOptions = new MongoClientOptions.Builder()
                 .addServerListener(new ServerListenerAdapter() {

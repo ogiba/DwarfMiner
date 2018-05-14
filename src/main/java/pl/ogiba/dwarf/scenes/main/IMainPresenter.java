@@ -17,4 +17,6 @@ public interface IMainPresenter {
     void loadCollections();
     
     void loadSelectedCollection(String collection);
+    
+    void proceedInsertAction();
 }

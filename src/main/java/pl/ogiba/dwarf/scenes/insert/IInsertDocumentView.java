@@ -5,6 +5,7 @@
  */
 package pl.ogiba.dwarf.scenes.insert;
 
+import com.mongodb.client.MongoDatabase;
 import javafx.scene.Scene;
 
 /**
@@ -13,4 +14,8 @@ import javafx.scene.Scene;
  */
 public interface IInsertDocumentView {
     Scene getScene();
+    
+    void setDatabaseReference(MongoDatabase database);
+    
+    void show();
 }

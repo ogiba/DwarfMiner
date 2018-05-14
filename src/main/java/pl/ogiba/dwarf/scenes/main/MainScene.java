@@ -5,6 +5,7 @@
  */
 package pl.ogiba.dwarf.scenes.main;
 
+import com.mongodb.client.MongoDatabase;
 import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -24,6 +25,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import pl.ogiba.dwarf.scenes.insert.IInsertDocumentView;
 import pl.ogiba.dwarf.scenes.insert.InsertDocumentScene;
 import pl.ogiba.dwarf.utils.JsonConverter;
 import pl.ogiba.dwarf.utils.base.BaseScene;
@@ -145,6 +147,15 @@ public class MainScene extends BaseScene implements IMainView {
         dataArea.setText(data);
     }
 
+    @Override
+    public void onInsertApplied(MongoDatabase database) {
+        Stage stage = new Stage();
+
+        IInsertDocumentView insertDocumentScene = new InsertDocumentScene();
+        insertDocumentScene.setDatabaseReference(database);
+        insertDocumentScene.show();
+    }
+
     private SplitPane setupRootPane(Node... elems) {
         SplitPane splitPane = new SplitPane();
         splitPane.autosize();
@@ -214,18 +225,13 @@ public class MainScene extends BaseScene implements IMainView {
     private Button setupInsertDocumentBtn() {
         final Button commitBtn = new Button("Insert document");
 
-        commitBtn.setOnAction(this::handleCommitAction);
+        commitBtn.setOnAction(this::handleInsertAction);
         commitBtn.setDisable(true);
 
         return commitBtn;
     }
 
-    private void handleCommitAction(ActionEvent event) {
-        Stage stage = new Stage();
-
-        InsertDocumentScene insertDocumentScene = new InsertDocumentScene();
-
-        stage.setScene(insertDocumentScene.getScene());
-        stage.show();
+    private void handleInsertAction(ActionEvent event) {
+        presenter.proceedInsertAction();
     }
 }

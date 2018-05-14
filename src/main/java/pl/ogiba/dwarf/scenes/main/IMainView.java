@@ -5,6 +5,7 @@
  */
 package pl.ogiba.dwarf.scenes.main;
 
+import com.mongodb.client.MongoDatabase;
 import java.util.ArrayList;
 import javafx.scene.Scene;
 
@@ -24,4 +25,6 @@ public interface IMainView {
     void onColectionSelected();
     
     void onSelectedCollectionLoaded(String data);
+    
+    void onInsertApplied(MongoDatabase database);
 }

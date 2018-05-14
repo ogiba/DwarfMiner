@@ -5,7 +5,8 @@
  */
 package pl.ogiba.dwarf.scenes.insert;
 
-import javafx.geometry.Pos;
+import com.mongodb.client.MongoDatabase;
+import javafx.event.ActionEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import pl.ogiba.dwarf.utils.base.BaseScene;
 
 /**
@@ -24,10 +26,14 @@ import pl.ogiba.dwarf.utils.base.BaseScene;
  */
 public class InsertDocumentScene extends BaseScene implements IInsertDocumentView{
 
+    private Stage stage;
     private Parent root;
+    private InsertDocumentPresenter presenter;
 
     public InsertDocumentScene() {
-        Button cancelBtn = new Button("Cancel");
+        this.presenter = new InsertDocumentPresenter();
+        
+        Button cancelBtn = setupCancelBtn();
         Button commitBtn = new Button("Commit");
 
         final Pane spacer = new Pane();
@@ -47,6 +53,10 @@ public class InsertDocumentScene extends BaseScene implements IInsertDocumentVie
         AnchorPane.setRightAnchor(borderPane, 0d);
 
         root = new AnchorPane(borderPane);
+        
+        stage = new Stage();
+        stage.setTitle("Insert new document");
+        stage.setScene(getScene());
     }
 
     @Override
@@ -56,4 +66,26 @@ public class InsertDocumentScene extends BaseScene implements IInsertDocumentVie
         scene.setFill(Color.GHOSTWHITE);
         return scene;
     }
+
+    @Override
+    public void show() {
+        stage.show();
+    }
+
+    @Override
+    public void setDatabaseReference(MongoDatabase database) {
+        presenter.transferDatabaseReference(database);
+    }
+    
+    private Button setupCancelBtn() {
+        final Button cancelBtn = new Button("Cancel");
+        cancelBtn.setOnAction(this::handleCancelAction);
+        return cancelBtn;
+    }
+    
+    private void handleCancelAction(ActionEvent event) {
+        stage.close();
+    }
+    
+    
 }
