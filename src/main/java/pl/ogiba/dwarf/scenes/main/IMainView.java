@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.ogiba.dwarf.scenes;
+package pl.ogiba.dwarf.scenes.main;
 
 import java.util.ArrayList;
 import javafx.scene.Scene;

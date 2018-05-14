@@ -21,7 +21,7 @@ import javafx.scene.paint.Color;
  *
  * @author robertogiba
  */
-public class InsertDocumentScene {
+public class InsertDocumentScene implements IInsertDocumentView{
 
     private Parent root;
 
@@ -34,7 +34,8 @@ public class InsertDocumentScene {
 
         HBox btnsContainer = new HBox(4, cancelBtn, spacer, commitBtn);
 
-        TextArea documentArea = new TextArea();
+        TextArea documentArea = new TextArea(); 
+        documentArea.getStylesheets().add("/styles/TextArea.css");
         
         BorderPane borderPane = new BorderPane(documentArea);
         borderPane.setBottom(btnsContainer);
@@ -47,6 +48,7 @@ public class InsertDocumentScene {
         root = new AnchorPane(borderPane);
     }
 
+    @Override
     public Scene getScene() {
         Scene scene = new Scene(root, 320, 240);
         scene.getStylesheets().add("/styles/Styles.css");
