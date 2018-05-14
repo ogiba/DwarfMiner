@@ -13,4 +13,6 @@ import com.mongodb.client.MongoDatabase;
  */
 public interface IInsertDocumentPresenter {
     void transferDatabaseReference(MongoDatabase database);
+    
+    void insertDataToDb(String data);
 }

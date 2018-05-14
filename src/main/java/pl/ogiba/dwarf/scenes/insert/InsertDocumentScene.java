@@ -24,26 +24,28 @@ import pl.ogiba.dwarf.utils.base.BaseScene;
  *
  * @author robertogiba
  */
-public class InsertDocumentScene extends BaseScene implements IInsertDocumentView{
+public class InsertDocumentScene extends BaseScene implements IInsertDocumentView {
 
     private Stage stage;
     private Parent root;
     private InsertDocumentPresenter presenter;
+    
+    private TextArea documentArea;
 
     public InsertDocumentScene() {
         this.presenter = new InsertDocumentPresenter();
-        
+
         Button cancelBtn = setupCancelBtn();
-        Button commitBtn = new Button("Commit");
+        Button commitBtn = setupCommitBtn();
 
         final Pane spacer = new Pane();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         HBox btnsContainer = new HBox(4, cancelBtn, spacer, commitBtn);
 
-        TextArea documentArea = new TextArea(); 
+        documentArea = new TextArea();
         documentArea.getStylesheets().add("/styles/TextArea.css");
-        
+
         BorderPane borderPane = new BorderPane(documentArea);
         borderPane.setBottom(btnsContainer);
 
@@ -53,7 +55,7 @@ public class InsertDocumentScene extends BaseScene implements IInsertDocumentVie
         AnchorPane.setRightAnchor(borderPane, 0d);
 
         root = new AnchorPane(borderPane);
-        
+
         stage = new Stage();
         stage.setTitle("Insert new document");
         stage.setScene(getScene());
@@ -76,16 +78,24 @@ public class InsertDocumentScene extends BaseScene implements IInsertDocumentVie
     public void setDatabaseReference(MongoDatabase database) {
         presenter.transferDatabaseReference(database);
     }
-    
+
     private Button setupCancelBtn() {
         final Button cancelBtn = new Button("Cancel");
         cancelBtn.setOnAction(this::handleCancelAction);
         return cancelBtn;
     }
-    
+
     private void handleCancelAction(ActionEvent event) {
         stage.close();
     }
     
+    private Button setupCommitBtn() {
+        final Button commitBtn = new Button("Commit");
+        commitBtn.setOnAction(this::handleCommitAction);
+        return commitBtn;
+    }
     
+    private void handleCommitAction(ActionEvent event) {
+        presenter.insertDataToDb(documentArea.getText());
+    }
 }

@@ -18,5 +18,9 @@ public class InsertDocumentPresenter implements IInsertDocumentPresenter{
     public void transferDatabaseReference(MongoDatabase database) {
         this.database = database;
     }
-   
+
+    @Override
+    public void insertDataToDb(String data) {
+        System.out.println(data);
+    }
 }
