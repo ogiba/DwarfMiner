@@ -77,8 +77,8 @@ public class InsertDocumentScene extends BaseScene implements IInsertDocumentVie
     }
 
     @Override
-    public void setCollectionReference(MongoCollection<Document> document) {
-        presenter.transferCollectionReference(document);
+    public void setCollectionReference(MongoCollection<Document> collection) {
+        presenter.transferCollectionReference(collection);
     }
 
     private Button setupCancelBtn() {
