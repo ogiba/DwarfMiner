@@ -5,20 +5,22 @@
  */
 package pl.ogiba.dwarf.scenes.insert;
 
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
 
 /**
  *
  * @author robertogiba
  */
 public class InsertDocumentPresenter implements IInsertDocumentPresenter{
-    private MongoDatabase database;
-    
-    @Override
-    public void transferDatabaseReference(MongoDatabase database) {
-        this.database = database;
-    }
+    private MongoCollection<Document> collection;
 
+    @Override
+    public void transferCollectionReference(MongoCollection<Document> collection) {
+        this.collection = collection;
+    }  
+  
     @Override
     public void insertDataToDb(String data) {
         System.out.println(data);

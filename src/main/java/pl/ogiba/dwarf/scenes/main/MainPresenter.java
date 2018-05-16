@@ -32,6 +32,7 @@ public class MainPresenter implements IMainPresenter {
     private MongoClient client;
     private MongoDatabase db;
     private final ArrayList<String> loadedDBs;
+    private MongoCollection<Document> selectedCollection;
 
     private boolean isConnected = false;
 
@@ -79,7 +80,7 @@ public class MainPresenter implements IMainPresenter {
     @Override
     public void loadSelectedCollection(String collection) {
         mainView.onColectionSelected();
-        MongoCollection<Document> selectedCollection = db.getCollection(collection);
+        selectedCollection = db.getCollection(collection);
 
         System.out.println(selectedCollection.find().first());
 
@@ -89,7 +90,7 @@ public class MainPresenter implements IMainPresenter {
 
     @Override
     public void proceedInsertAction() {
-        mainView.onInsertApplied(db);
+        mainView.onInsertApplied(selectedCollection);
     }
 
     private void connectToDb() {

@@ -5,6 +5,7 @@
  */
 package pl.ogiba.dwarf.scenes.main;
 
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import java.util.ArrayList;
 import javafx.application.Platform;
@@ -25,6 +26,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.bson.Document;
 import pl.ogiba.dwarf.scenes.insert.IInsertDocumentView;
 import pl.ogiba.dwarf.scenes.insert.InsertDocumentScene;
 import pl.ogiba.dwarf.utils.JsonConverter;
@@ -148,14 +150,14 @@ public class MainScene extends BaseScene implements IMainView {
     }
 
     @Override
-    public void onInsertApplied(MongoDatabase database) {
+    public void onInsertApplied(MongoCollection<Document> document) {
         Stage stage = new Stage();
 
         IInsertDocumentView insertDocumentScene = new InsertDocumentScene();
-        insertDocumentScene.setDatabaseReference(database);
+        insertDocumentScene.setCollectionReference(document);
         insertDocumentScene.show();
     }
-
+   
     private SplitPane setupRootPane(Node... elems) {
         SplitPane splitPane = new SplitPane();
         splitPane.autosize();

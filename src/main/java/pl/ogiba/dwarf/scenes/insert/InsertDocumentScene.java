@@ -5,6 +5,7 @@
  */
 package pl.ogiba.dwarf.scenes.insert;
 
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import javafx.event.ActionEvent;
 import javafx.scene.Parent;
@@ -18,6 +19,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.bson.Document;
 import pl.ogiba.dwarf.utils.base.BaseScene;
 
 /**
@@ -75,8 +77,8 @@ public class InsertDocumentScene extends BaseScene implements IInsertDocumentVie
     }
 
     @Override
-    public void setDatabaseReference(MongoDatabase database) {
-        presenter.transferDatabaseReference(database);
+    public void setCollectionReference(MongoCollection<Document> document) {
+        presenter.transferCollectionReference(document);
     }
 
     private Button setupCancelBtn() {

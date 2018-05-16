@@ -5,14 +5,15 @@
  */
 package pl.ogiba.dwarf.scenes.insert;
 
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
 
 /**
  *
  * @author robertogiba
  */
 public interface IInsertDocumentPresenter {
-    void transferDatabaseReference(MongoDatabase database);
+    void transferCollectionReference(MongoCollection<Document> collection);
     
     void insertDataToDb(String data);
 }

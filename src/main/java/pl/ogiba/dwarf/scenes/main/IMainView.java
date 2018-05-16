@@ -5,9 +5,10 @@
  */
 package pl.ogiba.dwarf.scenes.main;
 
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCollection;
 import java.util.ArrayList;
 import javafx.scene.Scene;
+import org.bson.Document;
 
 /**
  *
@@ -26,5 +27,5 @@ public interface IMainView {
     
     void onSelectedCollectionLoaded(String data);
     
-    void onInsertApplied(MongoDatabase database);
+    void onInsertApplied(MongoCollection<Document> document);
 }
