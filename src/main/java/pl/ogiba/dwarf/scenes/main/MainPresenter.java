@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.ogiba.dwarf.scenes;
+package pl.ogiba.dwarf.scenes.main;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
@@ -12,18 +12,12 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 import com.mongodb.event.ServerClosedEvent;
-import com.mongodb.event.ServerDescriptionChangedEvent;
 import com.mongodb.event.ServerHeartbeatFailedEvent;
-import com.mongodb.event.ServerHeartbeatSucceededEvent;
-import com.mongodb.event.ServerListener;
-import com.mongodb.event.ServerOpeningEvent;
 import com.mongodb.util.JSON;
 import java.util.ArrayList;
-import org.bson.BsonDocument;
+import java.util.HashMap;
+import java.util.Map;
 import org.bson.Document;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.conversions.Bson;
-import org.bson.json.JsonWriter;
 import pl.ogiba.dwarf.utils.ServerListenerAdapter;
 import pl.ogiba.dwarf.utils.ServerMonitorListenerAdapter;
 
@@ -37,11 +31,14 @@ public class MainPresenter implements IMainPresenter {
 
     private MongoClient client;
     private MongoDatabase db;
+    private final ArrayList<String> loadedDBs;
+    private MongoCollection<Document> selectedCollection;
 
     private boolean isConnected = false;
 
     public MainPresenter(IMainView mainView) {
         this.mainView = mainView;
+        this.loadedDBs = new ArrayList<>();
     }
 
     @Override
@@ -60,7 +57,11 @@ public class MainPresenter implements IMainPresenter {
         }
 
         final String dbName = db.getName();
-        mainView.onDataLoaded(dbName);
+
+        if (!loadedDBs.contains(dbName)) {
+            this.loadedDBs.add(dbName);
+            mainView.onDataLoaded(dbName);
+        }
     }
 
     @Override
@@ -78,12 +79,18 @@ public class MainPresenter implements IMainPresenter {
 
     @Override
     public void loadSelectedCollection(String collection) {
-        MongoCollection<Document> selectedCollection = db.getCollection(collection);
-        
+        mainView.onColectionSelected();
+        selectedCollection = db.getCollection(collection);
+
         System.out.println(selectedCollection.find().first());
-        
+
         String data = JSON.serialize(selectedCollection.find());
         mainView.onSelectedCollectionLoaded(data);
+    }
+
+    @Override
+    public void proceedInsertAction() {
+        mainView.onInsertApplied(selectedCollection);
     }
 
     private void connectToDb() {

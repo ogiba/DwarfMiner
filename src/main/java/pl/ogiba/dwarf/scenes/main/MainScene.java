@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pl.ogiba.dwarf.scenes;
+package pl.ogiba.dwarf.scenes.main;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -23,18 +25,24 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import org.bson.Document;
+import pl.ogiba.dwarf.scenes.insert.IInsertDocumentView;
+import pl.ogiba.dwarf.scenes.insert.InsertDocumentScene;
 import pl.ogiba.dwarf.utils.JsonConverter;
+import pl.ogiba.dwarf.utils.base.BaseScene;
 
 /**
  *
  * @author ogiba
  */
-public class MainScene implements IMainView {
+public class MainScene extends BaseScene implements IMainView {
 
     private Parent root;
     private TreeView nodesTree;
     private TextArea dataArea;
     private Button connectBtn;
+    private Button insertDocumentBtn;
 
     private IMainPresenter presenter;
 
@@ -53,7 +61,16 @@ public class MainScene implements IMainView {
         dataArea = setupTextArea();
         dataArea.setDisable(true);
 
-        AnchorPane dataContainer = setupDataContainer(dataArea);
+        HBox dataActionsContainer = new HBox(4);
+
+        insertDocumentBtn = setupInsertDocumentBtn();
+
+        dataActionsContainer.getChildren().add(insertDocumentBtn);
+
+        BorderPane dataBorderPane = new BorderPane(dataArea);
+        dataBorderPane.setTop(dataActionsContainer);
+
+        AnchorPane dataContainer = setupDataContainer(dataBorderPane);
 
         SplitPane splitPane = setupRootPane(nodesContainer, dataContainer);
 
@@ -87,7 +104,7 @@ public class MainScene implements IMainView {
 
     @Override
     public void onConnectionResult(boolean isConnected) {
-        Platform.runLater(() -> {
+        runOnUiThread(() -> {
             final String btnTitle = isConnected ? "Disconnect" : "Connect to DB";
             connectBtn.setText(btnTitle);
             dataArea.setDisable(!isConnected);
@@ -99,7 +116,7 @@ public class MainScene implements IMainView {
 
     @Override
     public void onDataLoaded(String dbName) {
-        Platform.runLater(() -> {
+        runOnUiThread(() -> {
             TreeItem<String> dataBaseItem = new TreeItem<>(dbName);
 
             nodesTree.getRoot().getChildren().add(dataBaseItem);
@@ -110,7 +127,7 @@ public class MainScene implements IMainView {
 
     @Override
     public void onCollectionsLoaded(ArrayList<String> collections) {
-        Platform.runLater(() -> {
+        runOnUiThread(() -> {
             TreeItem dbTreeItem = (TreeItem) nodesTree.getRoot().getChildren().get(0);
 
             collections.forEach((name) -> {
@@ -121,10 +138,26 @@ public class MainScene implements IMainView {
     }
 
     @Override
+    public void onColectionSelected() {
+        runOnUiThread(() -> {
+            insertDocumentBtn.setDisable(false);
+        });
+    }
+
+    @Override
     public void onSelectedCollectionLoaded(String data) {
         dataArea.setText(data);
     }
 
+    @Override
+    public void onInsertApplied(MongoCollection<Document> document) {
+        Stage stage = new Stage();
+
+        IInsertDocumentView insertDocumentScene = new InsertDocumentScene();
+        insertDocumentScene.setCollectionReference(document);
+        insertDocumentScene.show();
+    }
+   
     private SplitPane setupRootPane(Node... elems) {
         SplitPane splitPane = new SplitPane();
         splitPane.autosize();
@@ -178,7 +211,7 @@ public class MainScene implements IMainView {
         return textArea;
     }
 
-    private AnchorPane setupDataContainer(TextArea dataArea) {
+    private AnchorPane setupDataContainer(Node dataArea) {
         final AnchorPane dataContainer = new AnchorPane();
 
         AnchorPane.setLeftAnchor(dataArea, 0.0);
@@ -189,5 +222,18 @@ public class MainScene implements IMainView {
         dataContainer.getChildren().add(dataArea);
 
         return dataContainer;
+    }
+
+    private Button setupInsertDocumentBtn() {
+        final Button commitBtn = new Button("Insert document");
+
+        commitBtn.setOnAction(this::handleInsertAction);
+        commitBtn.setDisable(true);
+
+        return commitBtn;
+    }
+
+    private void handleInsertAction(ActionEvent event) {
+        presenter.proceedInsertAction();
     }
 }

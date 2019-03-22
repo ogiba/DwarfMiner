@@ -16,6 +16,8 @@ import javafx.util.StringConverter;
  */
 public class JsonConverter extends StringConverter<String> {
 
+    private static final int DEFUALT_INDENT = 4;
+
     @Override
     public String toString(String object) {
         if (object == null) {
@@ -27,33 +29,8 @@ public class JsonConverter extends StringConverter<String> {
 
     @Override
     public String fromString(String string) {
-//        Pattern regex = Pattern.compile("[\\[\\{*,\\}\\]]");
-//        String regex = "[\\[\\{*,\\}\\]]";
+        String formattedValue = formatJson(string, DEFUALT_INDENT);
 
-//        String openRegex = "[\\[\\{,]";
-//        String openReplacement = "$0\n";
-//
-//        String formattedValue = string.replaceAll(openRegex, openReplacement);
-//
-//        String closeRegex = "[\\]\\}]";
-//        String closeReplacement = "\n$0";
-//        String formattedValue = toPrettyFormat(string);
-        String formattedValue = formatJson(string);
-        //        for (char singleChar : string.toCharArray()) {
-        //            String currentChar = String.valueOf(singleChar);
-        //
-        //            final Matcher matcher = regex.matcher(currentChar);
-        //
-        //            if (matcher.find()) {
-        //                if (currentChar.equals("}") || currentChar.equals("]")) {
-        //                    formattedValue += "\n" + currentChar;
-        //                } else {
-        //                    formattedValue += currentChar + "\n";
-        //                }
-        //            } else {
-        //                formattedValue += currentChar;
-        //            }
-        //        }
         return formattedValue;
     }
 
@@ -77,18 +54,13 @@ public class JsonConverter extends StringConverter<String> {
         return prettyJson;
     }
 
-    public String formatJson(String jsonString) {
+    public String formatJson(String jsonString, int indent) {
         Pattern regex = Pattern.compile("[\\[\\{\"*\",\\}\\]]");
 
-//        String openRegex = "[\\[\\{,]";
-//        String openReplacement = "$0\n";
-//
-//        String closeRegex = "[\\]\\}]";
-//        String closeReplacement = "\n$0";
         int nodeDepth = 0;
         boolean openQuotation = true;
-        String previousChar = null;
-        String formattedValue = "";
+
+        StringBuilder builder = new StringBuilder();
         for (char singleChar : jsonString.toCharArray()) {
             String currentChar = String.valueOf(singleChar);
 
@@ -97,55 +69,68 @@ public class JsonConverter extends StringConverter<String> {
             if (matcher.find()) {
                 switch (currentChar) {
                     case "]":
-                        formattedValue += "\n" + currentChar;
+                        builder.append("\n").append(currentChar);
                         break;
                     case "{":
                     case "[":
-                        if (previousChar == null || !previousChar.equals(":")) {
-                            for (int i = 0; i < nodeDepth; i++) {
-                                formattedValue += "\t";
-                            }
+                        final boolean isColon = findColon(builder.toString());
+
+                        if (!isColon) {
+                            builder.append(indentValue(indent * nodeDepth));
                         }
+
                         nodeDepth++;
-                        formattedValue += currentChar + "\n";
+                        builder.append(currentChar).append("\n");
                         openQuotation = true;
                         break;
                     case "\"":
                         if (openQuotation) {
                             openQuotation = false;
-                            for (int i = 0; i < nodeDepth; i++) {
-                                formattedValue += "\t";
-                            }
+                            builder.append(indentValue(indent * nodeDepth));
                         }
-                        
-                        formattedValue += currentChar;
+
+                        builder.append(currentChar);
                         break;
                     case "}":
                         nodeDepth--;
-                        formattedValue += "\n";
-                        for (int i = 0; i < nodeDepth; i++) {
-                            formattedValue += "\t";
-                        }
-                        formattedValue += currentChar;
+                        builder.append("\n")
+                                .append(indentValue(indent * nodeDepth))
+                                .append(currentChar);
                         break;
                     case ",":
-                        formattedValue += currentChar + "\n";
+                        builder.append(currentChar)
+                                .append("\n");
                         openQuotation = true;
                         break;
                     default:
-                        for (int i = 0; i < nodeDepth; i++) {
-                            formattedValue += "\t";
-                        }
-                        formattedValue += currentChar + "\n";
-//                        openQuotation = true;
+                        builder.append(indentValue(indent * nodeDepth))
+                                .append(currentChar)
+                                .append("\n");
                         break;
                 }
             } else {
-                formattedValue += currentChar;
+                builder.append(currentChar);
             }
-
-            previousChar = currentChar;
         }
-        return formattedValue;
+        return builder.toString();
+    }
+
+    private boolean findColon(String valueToCheck) {
+        if (valueToCheck.length() < 1) {
+            return false;
+        }
+        char[] currentFormattedChars = valueToCheck.trim()
+                .toCharArray();
+        final int lastIndex = currentFormattedChars.length - 1;
+
+        return currentFormattedChars[lastIndex] == ':';
+    }
+
+    private String indentValue(int depth) {
+        String indentedValue = "";
+        for (int j = 0; j < depth; j++) {
+            indentedValue += " ";
+        }
+        return indentedValue;
     }
 }
