@@ -38,8 +38,8 @@ class MainScene : BaseScene(), IMainView {
     private val root = AnchorPane()
     private val nodesTree = setupTree()
     private val dataArea = setupTextArea()
-    private val connectBtn = setupConnectButton()
-    private val insertDocumentBtn = setupInsertDocumentBtn()
+    private val connectButton = setupConnectButton()
+    private val insertDocumentButton = setupInsertDocumentBtn()
 
     private val presenter = MainPresenter(this)
 
@@ -53,7 +53,7 @@ class MainScene : BaseScene(), IMainView {
 
         val dataActionsContainer = HBox(4.0)
 
-        dataActionsContainer.children.add(insertDocumentBtn)
+        dataActionsContainer.children.add(insertDocumentButton)
 
         val dataBorderPane = BorderPane(dataArea)
         dataBorderPane.top = dataActionsContainer
@@ -65,7 +65,7 @@ class MainScene : BaseScene(), IMainView {
         val container = AnchorPane(splitPane)
         val borderPane = BorderPane(container)
 
-        borderPane.top = connectBtn
+        borderPane.top = connectButton
 
         AnchorPane.setBottomAnchor(borderPane, 0.0)
         AnchorPane.setLeftAnchor(borderPane, 0.0)
@@ -76,16 +76,15 @@ class MainScene : BaseScene(), IMainView {
     }
 
     override fun getScene(): Scene {
-        val scene = Scene(root, 640.0, 480.0)
-        scene.stylesheets.add("/styles/Styles.css")
-        scene.fill = Color.GHOSTWHITE
-        return scene
+        return Scene(root, 640.0, 480.0).apply {
+            stylesheets.add("/styles/Styles.css")
+            fill = Color.GHOSTWHITE
+        }
     }
 
     override fun onConnectionResult(isConnected: Boolean) {
         runOnUiThread {
-            val btnTitle = if (isConnected) "Disconnect" else "Connect to DB"
-            connectBtn.text = btnTitle
+            connectButton.text = if (isConnected) "Disconnect" else "Connect to DB"
             dataArea.isDisable = !isConnected
             nodesTree.setDisable(!isConnected)
         }
@@ -105,17 +104,16 @@ class MainScene : BaseScene(), IMainView {
 
     override fun onCollectionsLoaded(collections: ArrayList<String>) {
         runOnUiThread {
-            val dbTreeItem = nodesTree.root.children[0]
+            val dbTreeItem = nodesTree.root.children.first()
 
             collections.forEach { name ->
-                val collectionName = TreeItem(name)
-                dbTreeItem.children.add(collectionName)
+                dbTreeItem.children.add(TreeItem(name))
             }
         }
     }
 
     override fun onColectionSelected() {
-        runOnUiThread { insertDocumentBtn.isDisable = false }
+        runOnUiThread { insertDocumentButton.isDisable = false }
     }
 
     override fun onSelectedCollectionLoaded(data: String) {
@@ -125,54 +123,51 @@ class MainScene : BaseScene(), IMainView {
     override fun onInsertApplied(document: MongoCollection<Document>) {
         val stage = Stage()
 
-        val insertDocumentScene = InsertDocumentScene()
-        insertDocumentScene.setCollectionReference(document)
-        insertDocumentScene.show()
+        InsertDocumentScene().apply {
+            setCollectionReference(document)
+        }.show()
     }
 
     private fun setupRootPane(vararg elems: Node): SplitPane {
-        val splitPane = SplitPane()
-        splitPane.autosize()
-        splitPane.orientation = Orientation.HORIZONTAL
-
-        splitPane.items.addAll(*elems)
-        splitPane.setDividerPositions(0.3, 0.9)
-
-        AnchorPane.setLeftAnchor(splitPane, 10.0)
-        AnchorPane.setRightAnchor(splitPane, 10.0)
-        AnchorPane.setTopAnchor(splitPane, 10.0)
-        AnchorPane.setBottomAnchor(splitPane, 10.0)
-
-        return splitPane
+        return SplitPane().apply {
+            autosize()
+            orientation = Orientation.HORIZONTAL
+            items.addAll(*elems)
+            setDividerPositions(0.3, 0.9)
+        }.let { splitPane ->
+            AnchorPane.setLeftAnchor(splitPane, 10.0)
+            AnchorPane.setRightAnchor(splitPane, 10.0)
+            AnchorPane.setTopAnchor(splitPane, 10.0)
+            AnchorPane.setBottomAnchor(splitPane, 10.0)
+            splitPane
+        }
     }
 
     private fun setupTree(): TreeView<String> {
-        val rootItem = TreeItem("ServerName")
-        return TreeView(rootItem).apply {
+        return TreeView(TreeItem("ServerName")).apply {
             isDisable = true
             onMouseClicked = EventHandler<MouseEvent> { handleTreeMouseClick(it) }
         }
     }
 
     private fun handleTreeMouseClick(mouseEvent: MouseEvent) {
-        val selectedItem = nodesTree.selectionModel.selectedItem as TreeItem<*>
-        if (selectedItem.isLeaf) {
-            println("Selected item: " + selectedItem.value)
-            presenter.loadSelectedCollection(selectedItem.value as String)
+        with(nodesTree.selectionModel.selectedItem) {
+            if (isLeaf) {
+                println("Selected item: $value")
+                presenter.loadSelectedCollection(value)
+            }
         }
     }
 
-    private fun setupNodesContainer(nodesView: TreeView<*>): AnchorPane {
-        val nodesContainer = AnchorPane()
+    private fun setupNodesContainer(nodesView: TreeView<String>): AnchorPane {
+        return AnchorPane().also { nodesContainer ->
+            AnchorPane.setLeftAnchor(nodesView, 0.0)
+            AnchorPane.setRightAnchor(nodesView, 0.0)
+            AnchorPane.setTopAnchor(nodesView, 0.0)
+            AnchorPane.setBottomAnchor(nodesView, 0.0)
 
-        AnchorPane.setLeftAnchor(nodesView, 0.0)
-        AnchorPane.setRightAnchor(nodesView, 0.0)
-        AnchorPane.setTopAnchor(nodesView, 0.0)
-        AnchorPane.setBottomAnchor(nodesView, 0.0)
-
-        nodesContainer.children.add(nodesView)
-
-        return nodesContainer
+            nodesContainer.children.add(nodesView)
+        }
     }
 
     private fun setupTextArea(): TextArea {
@@ -184,16 +179,14 @@ class MainScene : BaseScene(), IMainView {
     }
 
     private fun setupDataContainer(dataArea: Node): AnchorPane {
-        val dataContainer = AnchorPane()
+        return AnchorPane().also { dataContainer ->
+            AnchorPane.setLeftAnchor(dataArea, 0.0)
+            AnchorPane.setRightAnchor(dataArea, 0.0)
+            AnchorPane.setTopAnchor(dataArea, 0.0)
+            AnchorPane.setBottomAnchor(dataArea, 0.0)
 
-        AnchorPane.setLeftAnchor(dataArea, 0.0)
-        AnchorPane.setRightAnchor(dataArea, 0.0)
-        AnchorPane.setTopAnchor(dataArea, 0.0)
-        AnchorPane.setBottomAnchor(dataArea, 0.0)
-
-        dataContainer.children.add(dataArea)
-
-        return dataContainer
+            dataContainer.children.add(dataArea)
+        }
     }
 
     private fun setupInsertDocumentBtn(): Button {
