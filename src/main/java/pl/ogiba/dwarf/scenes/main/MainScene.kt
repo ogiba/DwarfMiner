@@ -44,35 +44,30 @@ class MainScene : BaseScene(), IMainView {
     private val presenter = MainPresenter(this)
 
     init {
-//        val hbox = HBox(20.0).apply {
-//            translateX = 20.0
-//            translateY = 20.0
-//        }
-
         val nodesContainer = setupNodesContainer(nodesTree)
 
-        val dataActionsContainer = HBox(4.0)
-
-        dataActionsContainer.children.add(insertDocumentButton)
-
         val dataBorderPane = BorderPane(dataArea)
-        dataBorderPane.top = dataActionsContainer
 
-        val dataContainer = setupDataContainer(dataBorderPane)
+        HBox(4.0).apply {
+            children.add(insertDocumentButton)
+        }.also { dataActionsContainer ->
+            dataBorderPane.top = dataActionsContainer
+        }
 
-        val splitPane = setupRootPane(nodesContainer, dataContainer)
+        val splitPane = setupRootPane(nodesContainer, setupDataContainer(dataBorderPane))
 
         val container = AnchorPane(splitPane)
-        val borderPane = BorderPane(container)
 
-        borderPane.top = connectButton
+        BorderPane(container).apply {
+            top = connectButton
+        }.also { borderPane ->
+            AnchorPane.setBottomAnchor(borderPane, 0.0)
+            AnchorPane.setLeftAnchor(borderPane, 0.0)
+            AnchorPane.setRightAnchor(borderPane, 0.0)
+            AnchorPane.setTopAnchor(borderPane, 0.0)
 
-        AnchorPane.setBottomAnchor(borderPane, 0.0)
-        AnchorPane.setLeftAnchor(borderPane, 0.0)
-        AnchorPane.setRightAnchor(borderPane, 0.0)
-        AnchorPane.setTopAnchor(borderPane, 0.0)
-
-        root.children.add(borderPane)
+            root.children.add(borderPane)
+        }
     }
 
     override fun getScene(): Scene {
