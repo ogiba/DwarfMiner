@@ -1,10 +1,8 @@
 package pl.ogiba.dwarf
 
 import javafx.application.Application
-import javafx.application.Application.launch
 import javafx.stage.Stage
-import pl.ogiba.dwarf.scenes.IMainView
-import pl.ogiba.dwarf.scenes.MainScene
+import pl.ogiba.dwarf.scenes.main.MainScene
 
 class MainApp : Application() {
 
