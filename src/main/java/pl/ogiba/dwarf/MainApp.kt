@@ -12,10 +12,8 @@ class MainApp : Application() {
     override fun start(stage: Stage) {
         window = stage
 
-        val mainScene = MainScene()
-
         stage.title = "SplitPane"
-        stage.scene = mainScene.scene
+        stage.scene =  MainScene().getScene()
         stage.show()
     }
 
