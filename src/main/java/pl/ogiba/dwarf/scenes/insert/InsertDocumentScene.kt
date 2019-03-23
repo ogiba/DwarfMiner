@@ -68,7 +68,7 @@ class InsertDocumentScene : BaseScene(), IInsertDocumentView {
     }
 
     override fun setCollectionReference(documentCollection: MongoCollection<Document>) {
-        presenter.transferCollectionReference(documentCollection)
+        presenter.documentCollection = documentCollection
     }
 
     private fun setupCancelButton(): Button {

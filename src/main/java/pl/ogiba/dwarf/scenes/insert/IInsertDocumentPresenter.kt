@@ -13,7 +13,7 @@ import org.bson.Document
  * @author robertogiba
  */
 interface IInsertDocumentPresenter {
-    fun transferCollectionReference(collection: MongoCollection<Document>)
+    var documentCollection: MongoCollection<Document>?
 
     fun insertDataToDb(data: String)
 }
