@@ -16,7 +16,7 @@ import org.bson.Document
 interface IInsertDocumentView {
     fun getScene(): Scene
 
-    fun setCollectionReference(document: MongoCollection<Document>)
+    fun setCollectionReference(documentCollection: MongoCollection<Document>)
 
     fun show()
 }
